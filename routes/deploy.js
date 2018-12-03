@@ -12,7 +12,9 @@ router.post('/', function(req, res) {
       ) {
         // run the deploy shell script
         const resp = res;
-        exec(process.env[`${payload.push.changes[0].new.name}`], (err, stdout, stderr) => {
+        const command = process.env[`${payload.push.changes[0].new.name}`];
+        console.log(command)
+        exec(command, (err, stdout, stderr) => {
             if (err) {
                 resp.send( err);
                 console.log(err);
@@ -26,7 +28,6 @@ router.post('/', function(req, res) {
     res.send('Invalid request');
 
 });
-
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });

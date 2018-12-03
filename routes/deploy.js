@@ -20,9 +20,9 @@ router.post('/', function(req, res) {
                 console.log(err);
                 return;
             }
-            resp.send( `${stdout}` );
+            console.log( `${stdout}` );
         });
-        // res.send( payload.push.changes[0].new );
+         res.send( payload.push.changes[0].new.name );
         return;
     }
     res.send('Invalid request');

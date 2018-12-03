@@ -13,7 +13,7 @@ router.post('/', function(req, res) {
         // run the deploy shell script
         const resp = res;
         const command = process.env[`${payload.push.changes[0].new.name}`];
-        console.log(command)
+        console.log(`${payload.push.changes[0].new.name}`, command)
         exec(command, (err, stdout, stderr) => {
             if (err) {
                 resp.send( err);

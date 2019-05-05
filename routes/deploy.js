@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 router.post('/', function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
-    console.log('deploy triggered!');
+    console.log('deploy triggered!', req.body);
     if (payload.push
         && payload.push.changes
         && payload.push.changes[0]

@@ -13,7 +13,7 @@ router.any('/', function(req, res) {
 				console.log(err);
 				return;
 			}
-			console.log(`${stdout}`);
+			console.log('output', `${stdout}`);
 		});
 		res.send( payload );
 		return;
@@ -42,8 +42,8 @@ router.any('/', function(req, res) {
     }
     res.send('Invalid request');
 });
-/*router.get('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
   res.send('respond with a resource');
-});*/
+});
 
 module.exports = router;

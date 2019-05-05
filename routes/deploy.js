@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 require('dotenv').config();
 const { exec } = require('child_process');
-router.post('/', function(req, res) {
+router.any('/', function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
     console.log('deploy triggered!', req.body);
@@ -42,8 +42,8 @@ router.post('/', function(req, res) {
     }
     res.send('Invalid request');
 });
-router.get('/', function(req, res, next) {
+/*router.get('/', function(req, res, next) {
   res.send('respond with a resource');
-});
+});*/
 
 module.exports = router;

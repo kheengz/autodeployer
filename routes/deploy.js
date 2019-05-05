@@ -13,7 +13,7 @@ router.post('/', function(req, res) {
 				console.log(err);
 				return;
 			}
-			console.log('output', `${stdout}`);
+			console.log('output', `${stdout}`, stderr);
 		});
 		res.send( payload );
 		return;

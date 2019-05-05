@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 const { exec } = require('child_process');
 
 require('dotenv').config();
-var indexRouter = require('./routes/env2');
+var indexRouter = require('./routes/index');
 var deployRouter = require('./routes/deploy');
-var envRouter = require('./routes/index');
+var envRouter = require('./routes/env2');
 
 var app = express();
 /* console.log(process.env['master']);

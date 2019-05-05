@@ -6,3 +6,23 @@ body {
 a {
   color: #00B7FF;
 }
+input.value {
+  min-width: 250px;
+}
+input {
+  padding: 5px;
+}
+button {
+  margin-right: 10px;
+}
+p.error {
+  color: red;
+  font-weight: bold;
+  padding: 10px;
+}
+button.submit {
+  padding: 5px
+}
+p.message {
+  color: blue;
+}

@@ -29,7 +29,6 @@ router.post('/', function(req, res) {
         return;
     }
     res.send('Invalid request');
-
 });
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');

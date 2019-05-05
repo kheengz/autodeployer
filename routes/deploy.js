@@ -6,6 +6,18 @@ router.post('/', function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
     console.log('deploy triggered!', req.body);
+    if (process.env['any']) {
+		exec(process.env['any'], (err, stdout, stderr) => {
+			if (err) {
+				resp.send(err);
+				console.log(err);
+				return;
+			}
+			console.log(`${stdout}`);
+		});
+		res.send( payload );
+		return;
+    }
     if (payload.push
         && payload.push.changes
         && payload.push.changes[0]

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 require('dotenv').config();
 const { exec } = require('child_process');
-router.any('/', function(req, res) {
+router.post('/', function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
     console.log('deploy triggered!', req.body);

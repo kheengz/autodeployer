@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h4 Welcome to #{title}
+  p.error #{error}
+  table
+     tr
+        th Param
+        th Value
+     tr
+        form(method="post" action="")
+            td
+                input(name="key" placeholder="Parameter" required)
+            td
+                input.value(name="value" placeholder="Value" required)
+            td
+                button(type="submit" name="add") Add/Update
+     each param in vars
+        tr
+           form(method="post" action="")
+               td #{param.key}
+               td
+                  input.value(name="value" placeholder="Value" value=`${param.value}`)
+               td
+                  button(type="submit" name="update") Update
+                  button(type="submit" name="comment") Comment
+                  button(type="submit" name="delete") Delete
+

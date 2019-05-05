@@ -20,7 +20,15 @@ router.get('/', (req, res, next) => {
 	    if (!err) {
 			vars = getParamsFromEnv(contents);
 		}
-		res.render('index', { title: 'Femi Automated Deploy', vars, error: err?'Error:' + err.message:null });
+		/*let textVars = '';
+	    vars.forEach((l) => {
+	    	textVars += l.key;
+	    	textVars += '=';
+	    	textVars += l.value;
+	    	textVars += '\n';
+		})*/
+
+		res.render('index', { title: 'Femi Automated Deploy', vars, textVars: contents, error: err?'Error:' + err.message:null });
 	});
 });
 
@@ -28,32 +36,49 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     const data = req.body;
     let error =  null;
-    if(!data.delete && !data.key || !data.body) {
-       // res.send('Error >>>>> You must set both key and value');
-       error = 'You must set both key and value';
-    }
-	if(data.key.indexOf(' ') > -1) {
+    let message = null;
+
+	if(data.env == '') {
 		// res.send('Error >>>>> You must set both key and value');
-		error = 'Key cannot have spaces';
+		error = 'Parameters are empty';
+	}
+	if (!error) {
+		fs.writeFile(envPath, data.env, e => {
+			console.log('eeee', e);
+			if (e) {
+				error = e.message;
+			} else {
+				message = 'Update successful!'
+			}
+			fs.readFile(envPath, "utf8", (err, contents) => {
+				let vars;
+				if (!err) {
+					vars = getParamsFromEnv(contents);
+				} else {
+					error = err.message;
+				}
+				if (!error) {
+					const found =  vars.filter(v => {
+						return v.key == data.key || v.key === '#' + data.key;
+					})
+					if (found.length > 0) {
+
+					}
+				}
+
+				/*let textVars = '';
+				vars.forEach((l) => {
+					textVars += l.key;
+					textVars += '=';
+					textVars += l.value;
+					textVars += '\n';
+				})*/
+				res.render('index', { title: 'Femi Automated Deploy', textVars: contents , message, vars, error: error?'Error: ' + error:'' });
+			});
+		});
 	}
 
-	fs.readFile(envPath, "utf8", (err, contents) => {
-		let vars;
-		if (!err) {
-			vars = getParamsFromEnv(contents);
-		} else {
-		  error = err.message;
-        }
-		if (!error) {
-            const found =  vars.filter(v => {
-             return v.key == data.key || v.key === '#' + data.key;
-            })
-            if (found.length > 0) {
 
-            }
-        }
-		res.render('index', { title: 'Femi Automated Deploy', vars, error: 'Error: ' + error });
-	});
 });
 
 function getParamsFromEnv(contents) {
@@ -64,7 +89,7 @@ function getParamsFromEnv(contents) {
 		const val = l.substring(pos+1);
 		return {
 			key: key,
-			value: eval(val)
+			value: val.replace(/\\(.)/mg, "$1")
 		};
 	});
 }

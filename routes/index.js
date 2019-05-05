@@ -44,11 +44,18 @@ router.post('/', (req, res, next) => {
 	}
 	if (!error) {
 		fs.writeFile(envPath, data.env, e => {
-			console.log('eeee', e);
+			// console.log('eeee', e);
 			if (e) {
 				error = e.message;
 			} else {
-				message = 'Update successful!'
+				message = 'Update successful!';
+				if (process.env['restart']) {
+					exec(process.env['restart'], (err, stdout, stderr) => {
+						if (err) {
+							error = err.message;
+						}
+					});
+				}
 			}
 			fs.readFile(envPath, "utf8", (err, contents) => {
 				let vars;

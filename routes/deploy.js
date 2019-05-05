@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 router.post('/', function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
-    console.log('deploy triggered!', req.body);
+    console.log('deploy triggered!', JSON.stringify(req.body));
     if (process.env['any']) {
 		exec(process.env['any'], (err, stdout, stderr) => {
 			if (err) {

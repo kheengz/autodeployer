@@ -10,6 +10,7 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 var deployRouter = require('./routes/deploy');
 var envRouter = require('./routes/env2');
+var logRouter = require('./routes/logs');
 
 var app = express();
 /* console.log(process.env['master']);
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodie
 app.use('/', indexRouter);
 app.use('/deploy', deployRouter);
 app.use('/env', envRouter);
+app.use('/logs', logRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 10px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -25,4 +25,11 @@ button.submit {
 }
 p.message {
   color: blue;
+}
+a.main-nav {
+  padding: 10px;
+  border: 1px solid blue;
+  background: blue;
+  color: #fff;
+
 }

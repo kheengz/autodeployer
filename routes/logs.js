@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 	const n = req.query.lines || 200;
 	exec(`tail -n ${n} ${logFile}`, (err, stdout, stderr) => {
 		if (err) {
-			resp.send(err);
+			res.send(err);
 			console.log(err);
 			return;
 		}

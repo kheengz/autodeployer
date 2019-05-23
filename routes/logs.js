@@ -4,11 +4,9 @@ require('dotenv').config();
 const { exec } = require('child_process');
 
 router.get('/', function(req, res, next) {
-	let logFile = process.env['output_log_file'];
+	const logType = req.query.log || 'output';
+	let logFile = process.env[`${logType}_log_file`] || process.env['output_log_file'];
 
-	if(req.query.log === 'error') {
-		logFile = process.env['error_log_file'];
-	}
 	if (!logFile) {
 		res.send('No ' + logFile + ' defined in configuration');
 		return;
@@ -20,7 +18,7 @@ router.get('/', function(req, res, next) {
 			console.log(err);
 			return;
 		}
-		res.render('logs', { title: 'Femi Automated Deploy - Logs', content: stdout , message: logFile, error: err?'Error: ' + err:'' });
+		res.render('logs', { title: 'Femi Automated Deploy - Logs', content: stdout , message: `${logType} Log: ${logFile}`, error: err?'Error: ' + err:'' });
 
 	});
 

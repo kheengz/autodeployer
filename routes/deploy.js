@@ -2,20 +2,21 @@ var express = require('express');
 var router = express.Router();
 require('dotenv').config();
 const { exec } = require('child_process');
-router.post('/', function(req, res) {
+router.post('/', async function(req, res) {
     //console.log(' deploy ', req.body);
     const payload  = req.body;
     console.log('deploy triggered!', JSON.stringify(req.body));
     if (process.env['any']) {
-		exec(process.env['any'], (err, stdout, stderr) => {
+	await 	exec(process.env['any'], (err, stdout, stderr) => {
 			if (err) {
 				console.log(err , stderr);
 				res.send(err);
 				return;
 			}
 			console.log('output', `${stdout}`);
+			res.send( payload );
 		});
-		res.send( payload );
+
 		return;
     }
     if (payload.push

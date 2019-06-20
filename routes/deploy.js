@@ -9,8 +9,8 @@ router.post('/', function(req, res) {
     if (process.env['any']) {
 		exec(process.env['any'], (err, stdout, stderr) => {
 			if (err) {
+				console.log(err , stderr);
 				res.send(err);
-				console.log(err);
 				return;
 			}
 			console.log('output', `${stdout}`);

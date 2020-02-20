@@ -6,7 +6,6 @@ const { exec } = require('child_process');
 const envPath = process.env.app_env_file_path;
 
 
-
 /* GET home page. */
 
 router.get('/', (req, res, next) => {
@@ -29,11 +28,12 @@ router.post('/', (req, res, next) => {
 	const data = req.body;
 	let error =  null;
 	let message =  null;
-	if (!data.delete && !data.key || !data.value) {
+	if ((!data.key || !data.value) && !data.delete) {
 		// res.send('Error >>>>> You must set both key and value');
 		error = 'You must set both key and value';
 	}
-	if (data.key.indexOf(' ') > -1) {
+	console.log('data: >>>>>>>>>>> ', data);
+	if (!data.delete && data.key.indexOf(' ') > -1) {
 		// res.send('Error >>>>> You must set both key and value');
 		error = 'Key cannot have spaces';
 	}
@@ -46,31 +46,38 @@ router.post('/', (req, res, next) => {
 		  error = err.message;
         }
 		if (!error) {
-            const found =  vars.filter(v => {
-             return v.key == data.key || v.key === '#' + data.key;
-            });
-            if (found.length === 0) {
-							vars.push({key: data.key, value: data.value});
-							const lines = getEnvFromParams(vars);
-							fs.writeFile(envPath, lines, e => {
-								if (e) {
-									error = e.message;
-								} else {
-									message = 'Update successful!';
-									if (process.env['restart']) {
-										exec(process.env['restart'], (err, stdout, stderr) => {
-											if (err) {
-												error = err.message;
-												console.error(`exec error: ${err}`);
-											}
-										});
-									}
-								}
-							});
-            } else  {
-            	error = 'Key: ' + data.key + ' already exist';
-						}
-        }
+      let lines = null;
+      const found =  vars.filter(v => {
+       return v.key == data.key || v.key === '#' + data.key;
+      });
+      if (data.delete) {
+        lines = getEnvFromParams(vars, data.delete);
+        vars = getParamsFromEnv(lines);
+      } else if (found.length === 0) {
+        vars.push({key: data.key, value: data.value});
+        lines = getEnvFromParams(vars);
+      } else {
+        error = 'Key: ' + data.key + ' already exist';
+      }
+
+      if (lines) {
+        fs.writeFile(envPath, lines, e => {
+          if (e) {
+            error = e.message;
+          } else {
+            message = 'Update successful!';
+            if (process.env['restart']) {
+              exec(process.env['restart'], (err, stdout, stderr) => {
+                if (err) {
+                  error = err.message;
+                  console.error(`exec error: ${err}`);
+                }
+              });
+            }
+          }
+        });
+      }
+    }
 		res.render('env2', { title: 'Femi Automated Deploy', message, vars, error: error?'Error: ' + error:'' });
 	});
 });
@@ -88,11 +95,13 @@ function getParamsFromEnv(contents) {
 	});
 }
 
-function getEnvFromParams(vars) {
+function getEnvFromParams(vars, deleteKey = null) {
 	let lines = '';
 	for (let i = 0; i < vars.length; i++) {
 		if  (vars[i].key) {
-			lines += vars[i].key + '=' + vars[i].value + '\n';
+			lines += deleteKey && vars[i].key.trim().toLowerCase() === deleteKey.trim().toLowerCase()
+        ? '\n'
+        : vars[i].key + '=' + vars[i].value + '\n';
 		} else {
 			lines += '\n';
 		}

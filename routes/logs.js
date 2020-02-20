@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const fs = require('fs');
 router.get('/', function(req, res, next) {
 	const logType = req.query.log || 'output';
-	let logFile = process.env[`${logType}_log_file`] || process.env['output_log_file'];
+	let logFile = process.env[`${logType.toUpperCase()}_LOG_FILE`] || process.env['OUTPUT_LOG_FILE'];
 
 	if (!logFile) {
 		res.send('No ' + logFile + ' defined in configuration');

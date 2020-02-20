@@ -2,6 +2,9 @@ extends layout
 
 block content
   h4 Environment Variables
+  each param in envNames
+    a(href=`?env=${param}`) #{param.toUpperCase()}
+    span &nbsp;|&nbsp;
   p.error #{error}
   p.message #{message}
   form(method="post" action="")

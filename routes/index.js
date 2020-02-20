@@ -3,21 +3,21 @@ const router = express.Router();
 const fs = require('fs');
 require('dotenv').config();
 const { exec } = require('child_process');
-const envPath = process.env.app_env_file_path;
-
-
+const envNames = process.env.ENV_FILE_NAMES.split(',');
 
 /* GET home page. */
 
 router.get('/', (req, res, next) => {
+	const envType = req.query.env;
+	const envPath = envType && process.env[`${envType.toUpperCase()}_APP_ENV_FILE_PATH`] || process.env['APP_ENV_FILE_PATH'];
 	if(!envPath) {
-	  console.log('app_env_file_path: ', envPath);
-	  res.send('[error] >>>>>>> app_env_file_path does not exist or is invalid in config');
+	  console.log('APP_ENV_FILE_PATH: ', envPath);
+	  res.send('[error] >>>>>>> APP_ENV_FILE_PATH does not exist or is invalid in config');
 	  return;
     }
 	fs.readFile(envPath, "utf8", (err, contents) => {
 		let vars;
-	    if (!err) {
+		if (!err) {
 			vars = getParamsFromEnv(contents);
 		}
 		/*let textVars = '';
@@ -28,15 +28,17 @@ router.get('/', (req, res, next) => {
 	    	textVars += '\n';
 		})*/
 
-		res.render('index', { title: 'Femi Automated Deploy', vars, textVars: contents, error: err?'Error:' + err.message:null });
+		res.render('index', { title: 'Femi Automated Deploy', vars, textVars: contents, envNames,  envType, error: err?'Error:' + err.message:null });
 	});
 });
 
 /* POST home page. */
 router.post('/', async (req, res, next) => {
-    const data = req.body;
-    let error =  null;
-    let message = null;
+	const envType = req.query.env;
+	const envPath = envType && process.env[`${envType.toUpperCase()}_APP_ENV_FILE_PATH`] || process.env['APP_ENV_FILE_PATH'];
+	const data = req.body;
+	let error =  null;
+	let message = null;
 
 	if(data.env == '') {
 		// res.send('Error >>>>> You must set both key and value');
@@ -49,8 +51,9 @@ router.post('/', async (req, res, next) => {
 				error = e.message;
 			} else {
 				message = 'Update successful!';
-				if (process.env['restart']) {
-					await exec(process.env['restart'], (err, stdout, stderr) => {
+				const restartPath = envType && process.env[`${envType.toUpperCase()}_RESTART_FILE_PATH`] || process.env['RESTART_FILE_PATH'];
+				if (restartPath) {
+					await exec(restartPath, (err, stdout, stderr) => {
 						if (err) {
 							error = err.message;
 							console.error(`exec error: ${err}`);
@@ -82,7 +85,7 @@ router.post('/', async (req, res, next) => {
 					textVars += l.value;
 					textVars += '\n';
 				})*/
-				res.render('index', { title: 'Femi Automated Deploy', textVars: contents , message, vars, error: error?'Error: ' + error:'' });
+				res.render('index', { title: 'Femi Automated Deploy', textVars: contents , envNames, message, vars, error: error?'Error: ' + error:'' });
 			});
 		});
 	}

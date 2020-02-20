@@ -3,15 +3,15 @@ const router = express.Router();
 const fs = require('fs');
 require('dotenv').config();
 const { exec } = require('child_process');
-const envPath = process.env.app_env_file_path;
+const envPath = process.env.APP_ENV_FILE_PATH;
 
 
 /* GET home page. */
 
 router.get('/', (req, res, next) => {
 	if(!envPath) {
-	  console.log('app_env_file_path: ', envPath);
-	  res.send('[error] >>>>>>> app_env_file_path does not exist or is invalid in config');
+	  console.log('APP_ENV_FILE_PATH: ', envPath);
+	  res.send('[error] >>>>>>> APP_ENV_FILE_PATH does not exist or is invalid in config');
 	  return;
     }
 	fs.readFile(envPath, "utf8", (err, contents) => {
@@ -66,8 +66,8 @@ router.post('/', (req, res, next) => {
             error = e.message;
           } else {
             message = 'Update successful!';
-            if (process.env['restart']) {
-              exec(process.env['restart'], (err, stdout, stderr) => {
+            if (process.env['RESTART_FILE_PATH']) {
+              exec(process.env['RESTART_FILE_PATH'], (err, stdout, stderr) => {
                 if (err) {
                   error = err.message;
                   console.error(`exec error: ${err}`);

@@ -11,11 +11,22 @@ block content
       }
 
   h4 Logs
-  a(href='?log=output&lines=200') Output Log
-  span &nbsp;|&nbsp;
-  a(href='?log=error&lines=200') Error Log
-  span &nbsp;|&nbsp;
-  a(href='?log=startup&lines=200') Startup Log
+  if envNames
+    each param in envNames
+        h4 #{param.toUpperCase()}: &nbsp;|&nbsp;
+            a(href=`?env=${param}&log=output&lines=200`) Output Log
+            span &nbsp;|&nbsp;
+            a(href=`?env=${param}&log=error&lines=200`) Error Log
+            span &nbsp;|&nbsp;
+            a(href=`?env=${param}&log=startup&lines=200`) Startup Log
+            span &nbsp;|&nbsp;
+  else
+      a(href='?log=output&lines=200') Output Log
+      span &nbsp;|&nbsp;
+      a(href='?log=error&lines=200') Error Log
+      span &nbsp;|&nbsp;
+      a(href='?log=startup&lines=200') Startup Log
+      span &nbsp;|&nbsp;
   p.error #{error}
   p.message #{message}&nbsp;&nbsp;&nbsp;&nbsp;
     a(href="" style="color:green") Refresh Log

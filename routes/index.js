@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 require('dotenv').config();
 const { exec } = require('child_process');
-const envNames = process.env.ENV_FILE_NAMES.split(',');
+const envNames = process.env.ENV_FILE_NAMES && process.env.ENV_FILE_NAMES.split(',') || '';
 
 /* GET home page. */
 

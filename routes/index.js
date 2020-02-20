@@ -33,7 +33,7 @@ router.get('/', (req, res, next) => {
 });
 
 /* POST home page. */
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const data = req.body;
     let error =  null;
     let message = null;
@@ -43,16 +43,18 @@ router.post('/', (req, res, next) => {
 		error = 'Parameters are empty';
 	}
 	if (!error) {
-		fs.writeFile(envPath, data.env, e => {
+		await fs.writeFile(envPath, data.env, async (e) => {
 			// console.log('eeee', e);
 			if (e) {
 				error = e.message;
 			} else {
 				message = 'Update successful!';
 				if (process.env['restart']) {
-					exec(process.env['restart'], (err, stdout, stderr) => {
+					await exec(process.env['restart'], (err, stdout, stderr) => {
 						if (err) {
 							error = err.message;
+							console.error(`exec error: ${err}`);
+							console.error(`exec message >>>>>>>>>>>>>>>>>> : ${error}`);
 						}
 					});
 				}

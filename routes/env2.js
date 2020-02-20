@@ -98,6 +98,9 @@ function getParamsFromEnv(contents) {
 function getEnvFromParams(vars, deleteKey = null) {
 	let lines = '';
 	for (let i = 0; i < vars.length; i++) {
+	  if (i % 5 === 0) {
+      lines += '\n';
+    }
 		if  (vars[i].key) {
 			lines += deleteKey && vars[i].key.trim().toLowerCase() === deleteKey.trim().toLowerCase()
         ? '\n'
